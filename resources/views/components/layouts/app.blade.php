@@ -27,6 +27,7 @@
 
 <body>
 
+    <!-- main layout (app.blade.php) -->
     <div class="fixed left-0 top-0 w-64 h-full bg-[#fffcfc] p-4 z-50 sidebar-menu transition-transform">
         <a href="#" class="flex items-center justify-center border-b border-b-gray-800">
             <img src="{{ asset('images/Logo_CBI_2.png') }}" class="h-14 w-30" alt="">
@@ -35,7 +36,7 @@
         <ul class="mt-4">
             <span class="text-gray-400 font-bold">Grading Mill</span>
             <li class="mb-1 group">
-                <a href="" class="flex font-semibold items-center py-2 px-4 text-slate-600 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
+                <a href="#" class="flex font-semibold items-center py-2 px-4 text-slate-600 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
                     <i class='bx bx-home'></i>
                     <span class="text-sm">Dashboard</span>
                     <i class="ri-arrow-right-s-line ml-auto group-[.selected]:rotate-90"></i>
@@ -54,8 +55,8 @@
 
             <ul class="ml-auto flex items-center">
                 <li class="mr-1 dropdown">
-                    <button type="button" class="dropdown-toggle text-gray-400 mr-4 w-8 h-8 rounded flex items-center justify-center  hover:text-gray-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="hover:bg-gray-100 rounded-full" viewBox="0 0 24 24" style="fill: gray;transform: ;msFilter:;">
+                    <button type="button" class="dropdown-toggle text-gray-400 mr-4 w-8 h-8 rounded flex items-center justify-center hover:text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="hover:bg-gray-100 rounded-full" viewBox="0 0 24 24" style="fill: gray;">
                             <path d="M19.023 16.977a35.13 35.13 0 0 1-1.367-1.384c-.372-.378-.596-.653-.596-.653l-2.8-1.337A6.962 6.962 0 0 0 16 9c0-3.859-3.14-7-7-7S2 5.141 2 9s3.14 7 7 7c1.763 0 3.37-.66 4.603-1.739l1.337 2.8s.275.224.653.596c.387.363.896.854 1.384 1.367l1.358 1.392.604.646 2.121-2.121-.646-.604c-.379-.372-.885-.866-1.391-1.36zM9 14c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z"></path>
                         </svg>
                     </button>
@@ -69,7 +70,7 @@
                     </div>
                 </li>
                 <button id="fullscreen-button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="hover:bg-gray-100 rounded-full" viewBox="0 0 24 24" style="fill: gray;transform: ;msFilter:;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="hover:bg-gray-100 rounded-full" viewBox="0 0 24 24" style="fill: gray;">
                         <path d="M5 5h5V3H3v7h2zm5 14H5v-5H3v7h7zm11-5h-2v5h-5v2h7zm-2-4h2V3h-7v2h5z"></path>
                     </svg>
                 </button>
@@ -96,8 +97,7 @@
                         </li>
                         <li>
                             <form method="POST" action="">
-                                <a role="menuitem" class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50 cursor-pointer" onclick="event.preventDefault();
-                                    this.closest('form').submit();">
+                                <a role="menuitem" class="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-[#f84525] hover:bg-gray-50 cursor-pointer" onclick="event.preventDefault(); this.closest('form').submit();">
                                     Log Out
                                 </a>
                             </form>
@@ -108,9 +108,11 @@
         </div>
         <!-- end navbar -->
 
+
+
+
         <!-- Content -->
         <div class="p-6">
-            <!-- Ensure this container spans full width -->
             <div class="bg-white w-full">
                 {{$slot}}
             </div>

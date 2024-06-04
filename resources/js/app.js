@@ -1,8 +1,7 @@
 import { createPopper } from '@popperjs/core';
 window.Popper = { createPopper };
-
-
-
+import 'flowbite';
+import { Modal } from 'flowbite'
 // start: Sidebar
 const sidebarToggle = document.querySelector('.sidebar-toggle')
 const sidebarOverlay = document.querySelector('.sidebar-overlay')
