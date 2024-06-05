@@ -216,10 +216,12 @@
         </table>
     </div>
 
-    <div class="p-6 bg-white rounded-lg overflow-x-auto shadow-md">
-        <canvas id="donust-line" class="w-full max-h-96"></canvas>
-        <canvas id="chart-line" class="w-full max-h-96"></canvas>
-    </div>
+
+    <canvas id="donust-line" class="p-6 bg-white rounded-lg shadow-md w-full max-h-96"></canvas>
+    <canvas id="chart-line" class=" p-6 bg-white rounded-lg shadow-md w-full h-full"></canvas>
+
+
+
 
     <script type="module">
         const chart = new Chart(
@@ -249,9 +251,28 @@
         );
 
         Livewire.on('updateChart', data => {
+
+            // console.log(data);
             chart.data = data[0];
             chart.update();
         });
+        // const data = {
+        //     labels: [
+        //         'Red',
+        //         'Blue',
+        //         'Yellow'
+        //     ],
+        //     datasets: [{
+        //         label: 'My First Dataset',
+        //         data: [300, 50, 100],
+        //         backgroundColor: [
+        //             'rgb(255, 99, 132)',
+        //             'rgb(54, 162, 235)',
+        //             'rgb(255, 205, 86)'
+        //         ],
+        //         hoverOffset: 4
+        //     }]
+        // };
         const Donuts = new Chart(
             document.getElementById('donust-line'), {
                 type: 'doughnut',
