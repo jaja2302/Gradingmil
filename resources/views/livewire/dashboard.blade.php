@@ -216,119 +216,74 @@
         </table>
     </div>
 
-
-    <div class="grid grid-cols-2 gap-4 mb-4 p-6 bg-white rounded-lg shadow-md">
-        <div class="col-span-2">
-            <h1>Chart</h1>
-        </div>
-        <div class="flex items-center justify-center rounded bg-gray-50 h-60 dark:bg-gray-800">
-            <div id="chart-pie" class="w-full h-full"></div>
-        </div>
-        <div class="flex items-center justify-center rounded bg-gray-50 h-60 dark:bg-gray-800">
-            <div id="chart-line" class="w-full h-full"></div>
-        </div>
+    <div class="p-6 bg-white rounded-lg overflow-x-auto shadow-md">
+        <canvas id="donust-line" class="w-full max-h-96"></canvas>
+        <canvas id="chart-line" class="w-full max-h-96"></canvas>
     </div>
 
     <script type="module">
-        document.addEventListener('livewire:init', () => {
-            Livewire.on('charts', (data) => {
-
-                var chart = data[0];
-                // console.log(chart);
-                var newSeriesData = [
-                    chart.total_kastrasi,
-                    chart.total_ripe,
-                    chart.total_unripe,
-                    chart.total_overripe,
-                    chart.total_bunch,
-                    chart.total_abnormal,
-                ];
-
-                var categories = [
-                    'Total Kastrasi',
-                    'Total Ripe',
-                    'Total Unripe',
-                    'Total Overripe',
-                    'Total Empty Bunch',
-                    'Total Abnormal',
-                ];
-
-                var LegendTotal = [
-                    chart.total_janjang,
-                    chart.est,
-                    chart.date,
-                ];
-
-                var legendCategories = [
-                    'Total Janjang',
-                    'Estate',
-                    'Tanggal',
-                ]
-
-                // Create a new chart with updated data
-                var options = {
-                    series: [44, 55, 41, 17, 15],
-                    chart: {
-                        type: 'donut',
-                        height: 300,
-                    },
-                    responsive: [{
-                        breakpoint: 480,
-                        options: {
-                            chart: {
-                                width: 200
-                            },
-                            legend: {
-                                position: 'bottom'
-                            }
-                        }
-                    }]
-                };
-                var chart = new ApexCharts(document.querySelector("#chart-pie"), options);
-                chart.render();
-
-
-                var Options2 = {
-                    series: [{
-                        name: "Desktops",
-                        data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
-                    }],
-                    chart: {
-                        height: 350,
-                        type: 'line',
-                        zoom: {
-                            enabled: false
+        const chart = new Chart(
+            document.getElementById('chart-line'), {
+                type: 'line',
+                data: {
+                    labels: @json($labels),
+                    datasets: @json($dataset)
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
                         }
                     },
-                    dataLabels: {
-                        enabled: false
-                    },
-                    stroke: {
-                        curve: 'straight'
-                    },
-                    title: {
-                        text: 'Product Trends by Month',
-                        align: 'left'
-                    },
-                    grid: {
-                        row: {
-                            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                            opacity: 0.5
+                    responsive: true,
+                    scales: {
+                        x: {
+                            stacked: true,
                         },
-                    },
-                    xaxis: {
-                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                        y: {
+                            stacked: true
+                        }
                     }
-                };
+                }
+            }
+        );
 
-                var Lines = new ApexCharts(document.querySelector("#chart-line"), Options2);
-                Lines.render();
-
-
-            });
+        Livewire.on('updateChart', data => {
+            chart.data = data[0];
+            chart.update();
         });
+        const Donuts = new Chart(
+            document.getElementById('donust-line'), {
+                type: 'doughnut',
+                data: {
+                    labels: @json($labels),
+                    datasets: @json($dataset)
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    responsive: true,
+                    scales: {
+                        x: {
+                            stacked: true,
+                        },
+                        y: {
+                            stacked: true
+                        }
+                    }
+                }
+            }
+        );
 
-        // Initialize the donut chart
+        Livewire.on('updateChartdonus', data => {
+
+            // console.log(data);
+            Donuts.data = data[0];
+            Donuts.update();
+        });
     </script>
 
 </div>

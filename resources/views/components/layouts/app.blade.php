@@ -24,6 +24,7 @@
     @livewireStyles
     @livewire('notifications')
     <link href="{{ asset('boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>

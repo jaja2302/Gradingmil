@@ -26,6 +26,8 @@ class Dashboard extends Component
     public $no_plat;
     public $driver;
     public $status;
+    public array $dataset = [];
+    public array $labels = [];
 
     public function resetdata()
     {
@@ -172,8 +174,8 @@ class Dashboard extends Component
 
         $req_tgl = $this->date;
         $mill = $this->mill;
-        $no_plat = ($this->no_plat !== 'not_set') ? $this->no_plat : null;
-        $driver = ($this->driver !== 'not_set') ? $this->driver : null;
+        $no_plat = ($this->no_plat !== 'not_set') ? null : $this->no_plat;
+        $driver = ($this->driver !== 'not_set') ? null :  $this->driver;
         $driverStatus = $this->status;
 
         $log = DB::table('log_sampling')
@@ -205,7 +207,9 @@ class Dashboard extends Component
         }
 
         $data = $log->get();
+        $this->tables = $data;
 
+        // dd($data);
 
         // dd($data, $req_tgl, $mill, $no_plat, $driver, $driverStatus);
 
@@ -224,11 +228,10 @@ class Dashboard extends Component
             ])
             ->where('log_sampling.waktu_mulai', 'like', '%' . $req_tgl . '%');
         if (!is_null($mill)) {
-            $log->where('log_sampling.mill_id', '=', $mill);
+            $querychart->where('log_sampling.mill_id', '=', $mill); // Correct query
         }
 
         $Chart = $querychart->get();
-
 
         $total_tp = $Chart->sum('total_tp');
         $total_kastrasi = $Chart->sum('total_kastrasi');
@@ -240,81 +243,70 @@ class Dashboard extends Component
         $est = $Chart[0]->est;
         $date = date('Y-m-d', strtotime($Chart[0]->date));
 
-
         $total_janjang = $total_tp + $total_kastrasi + $total_ripe + $total_unripe + $total_overripe + $total_bunch + $total_abnormal;
-
-        // dd($Chart);
-        $ChartResult = [
-            // 'total_tp' => $total_tp,
-            'total_kastrasi' => $total_kastrasi,
-            'total_ripe' => $total_ripe,
-            'total_unripe' => $total_unripe,
-            'total_overripe' => $total_overripe,
-            'total_bunch' => $total_bunch,
-            'total_abnormal' => $total_abnormal,
-            'total_janjang' => $total_janjang,
-            'est' => $est,
-            'date' => $date
-
+        $datachart = [
+            $total_kastrasi,
+            $total_ripe,
+            $total_unripe,
+            $total_overripe,
+            $total_bunch,
+            $total_abnormal,
+            $total_janjang,
         ];
+        $dataset = [
+            [
+                'label' => 'Line Chart',
+                'backgroundColor' => 'rgba(15,64,97,255)',
+                'borderColor' => 'rgba(15,64,97,255)',
+                'data' => $datachart,
+            ],
+        ];
+        $datasetdonuts = [
+            [
+                'label' => 'Pie Chart',
+                'backgroundColor' =>  ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)', 'rgb(25,255,102)', 'rgb(255,191,128)', 'rgb(102,68,0)'],
+                'hoverOffset' => 4,
+                'data' => $datachart,
 
-        $querychartpersen = DB::table('log_sampling')
-            ->orderBy('waktu_mulai', 'asc')
-            ->where('log_sampling.waktu_mulai', 'like', '%' . $req_tgl . '%');
-        if (!is_null($mill)) {
-            $log->where('log_sampling.mill_id', '=', $mill);
-        }
-
-        $chart_persen = $querychartpersen->get();
-
-
-        $grouped_data = [];
-
-        foreach ($chart_persen as $item) {
-            $waktu_mulai = $item->waktu_mulai;
-            $hourly_interval = date('H' . '.' . '00', strtotime($waktu_mulai));
-
-            if (!isset($grouped_data[$hourly_interval])) {
-                $grouped_data[$hourly_interval] = [];
-            }
-
-            $grouped_data[$hourly_interval][] = $item;
-        }
-        // dd($data);
-        // $grouped_data now contains the data grouped by hours in the "waktu_mulai" field
-        $percen = array();
-        foreach ($grouped_data as $key => $value) {
-            $ripe = 0;
-            $kastrasi = 0;
-            $unripe = 0;
-            $overripe = 0;
-            $empty_bunch = 0;
-            $abnormal = 0;
-            foreach ($value as $key1 => $value2) {
-                $ripe = +$value2->ripe;
-                $kastrasi = +$value2->kastrasi;
-                $unripe = +$value2->unripe;
-                $overripe = +$value2->overripe;
-                $empty_bunch = +$value2->empty_bunch;
-                $abnormal = +$value2->abnormal;
-            }
-
-            $total = $ripe + $kastrasi + +$unripe + $overripe + $empty_bunch + $abnormal;
-            if ($total != 0) {
-                $percenRipe = round(($ripe / $total) * 100, 2);
-            } else {
-                // Handle the case where $total is zero (division by zero)
-                $percenRipe = 0; // or set it to some other default value or handle it as needed
-            }
-            $percen[$key]['Percen_ripe'] = $percenRipe;
-        }
-        // dd($data);
-
-        $this->tables = $data;
-        $this->charts = $ChartResult;
-        $this->dispatch('charts', $this->charts);
+            ],
+        ];
+        $labels = $this->getLabels();
+        $this->dispatch('updateChart', [
+            'datasets' => $dataset,
+            'labels' => $labels,
+        ]);
+        $this->dispatch('updateChartdonus', [
+            'datasets' => $datasetdonuts,
+            'labels' => ['Total Kastrasi', 'Total Ripe', 'Total Unripe', 'Total Overripe', 'Total Empty Bunch', 'Total Abnormal'],
+        ]);
     }
 
+    private function getLabels()
+    {
+        return ['Total Kastrasi', 'Total Ripe', 'Total Unripe', 'Total Overripe', 'Total Empty Bunch', 'Total Abnormal'];
+    }
+
+    private function getRandomData()
+    {
+        $data = [];
+        for ($i = 0; $i < count($this->getLabels()); $i++) {
+            $data[] = rand(10, 100);
+        }
+        return $data;
+    }
+    public function mount()
+    {
+        $this->labels = $this->getLabels();
+
+        $this->dataset = [
+            [
+                'label' => 'Line Chart',
+                'backgroundColor' => 'rgba(15,64,97,255)',
+                'borderColor' => 'rgba(15,64,97,255)',
+                'data' => $this->getRandomData(),
+            ],
+        ];
+    }
     public function render()
     {
         $reg = Regional::query()->where('id', '!=', 5)->get()->toArray();
