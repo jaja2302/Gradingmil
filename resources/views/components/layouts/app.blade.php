@@ -19,9 +19,10 @@
             transform: translateX(0);
         }
     </style>
-
+    @vite(['resources/css/app.css','resources/js/app.js'])
     @filamentStyles
-    @vite('resources/css/app.css')
+    @livewireStyles
+    @livewire('notifications')
     <link href="{{ asset('boxicons/css/boxicons.min.css') }}" rel="stylesheet">
 </head>
 
@@ -120,11 +121,8 @@
         <!-- End Content -->
     </main>
 
-    @livewire('notifications')
-
     @filamentScripts
-    @vite('resources/js/app.js')
-
+    @livewireScripts
 
 </body>
 
